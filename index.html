@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les 99 Noms d'Allah - Une Expérience Spirituelle Ultime</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons for UI -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --bg-dark: #0c0a09; --bg-light: #f8fafc;
+            --text-dark: #e2e8f0; --text-light: #0f172a;
+            --card-dark: #18181b; --card-light: #ffffff;
+            --border-dark: #27272a; --border-light: #e2e8f0;
+            --gold: #facc15; --gold-hover: #eab308;
+        }
+        html.dark { color-scheme: dark; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-dark); scroll-behavior: smooth; transition: background-color 0.5s, color 0.5s; }
+        .dark body { background-color: var(--bg-dark); color: var(--text-dark); }
+        .light body { background-color: var(--bg-light); color: var(--text-light); }
+        .font-amiri { font-family: 'Amiri', serif; }
+
+        /* Arrière-plan Parallax Amélioré */
+        #background-parallax { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); overflow: hidden; }
+        .star { position: absolute; background-color: white; border-radius: 50%; transition: transform 0.2s ease-out; }
+        .layer { position: absolute; inset: 0; }
+        @keyframes shoot { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(300px, 300px); opacity: 0; } }
+        .shooting-star { position: absolute; width: 2px; height: 80px; background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent); animation: shoot 5s linear infinite; }
+
+        /* Barre de défilement */
+        ::-webkit-scrollbar { width: 8px; }
+        .dark ::-webkit-scrollbar-track { background: var(--card-dark); }
+        .light ::-webkit-scrollbar-track { background: var(--border-light); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold-hover); }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; animation-delay: var(--delay, 0s); }
+        @keyframes modal-in { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-in { animation: modal-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes modal-out { to { opacity: 0; transform: scale(0.95) translateY(20px); } }
+        .modal-out { animation: modal-out 0.2s ease-in forwards; }
+        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+        .pulse-ring { animation: pulse-ring 1s ease-out; }
+
+        /* Styles des composants */
+        .card { background-color: var(--card-dark); border: 1px solid var(--border-dark); transition: background-color 0.5s, border-color 0.5s; }
+        .dark .card { background-color: var(--card-dark); border-color: var(--border-dark); }
+        .light .card { background-color: var(--card-light); border-color: var(--border-light); }
+        .glassmorphism { background: rgba(24, 24, 27, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-dark); }
+        .light .glassmorphism { background: rgba(255, 255, 255, 0.5); border-bottom: 1px solid var(--border-light); }
+        .favorite-btn.favorited svg { fill: var(--gold); }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Pré-chargeur -->
+    <div id="preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gray-900 transition-opacity duration-500">
+        <div class="font-amiri text-5xl text-yellow-300">أسماء الله الحسنى</div>
+        <div class="w-32 h-1 bg-yellow-300/20 rounded-full overflow-hidden mt-4"><div id="preloader-bar" class="h-full bg-yellow-300 w-0 transition-all duration-1000"></div></div>
+    </div>
+    
+    <!-- Arrière-plan Parallax -->
+    <div id="background-parallax"></div>
+
+    <div id="app" class="relative z-10 min-h-screen opacity-0 transition-opacity duration-500">
+        <!-- En-tête -->
+        <header class="text-center pt-16 pb-12 md:pt-20 md:pb-16 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/30 to-transparent"></div>
+            <div class="container mx-auto px-4 relative">
+                <h1 class="text-5xl md:text-7xl font-bold text-yellow-300 font-amiri tracking-wider">أسماء الله الحسنى</h1>
+                <p class="mt-4 text-xl md:text-2xl opacity-90">Les Plus Beaux Noms d'Allah</p>
+                <div class="mt-8 flex flex-wrap justify-center items-center gap-4">
+                    <button id="randomNameBtn" class="flex items-center gap-2 bg-yellow-400/20 border border-yellow-400/50 text-yellow-300 px-6 py-2 rounded-full hover:bg-yellow-400/30 transition duration-300 backdrop-blur-sm"><i class="ph-shuffle-bold"></i>Découvrir</button>
+                    <button id="favorite-toggle" class="flex items-center gap-2 bg-white/10 border border-white/20 text-white px-6 py-2 rounded-full hover:bg-white/20 transition duration-300 backdrop-blur-sm"><i class="ph ph-heart"></i>Favoris <span id="favorite-count" class="bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">0</span></button>
+                    <button id="theme-toggle" class="p-2.5 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition duration-300 backdrop-blur-sm"><i id="theme-icon" class="ph text-xl text-yellow-300"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto p-4 md:p-8">
+            <!-- Nom du Jour -->
+            <section id="daily-name-section" class="mb-12 opacity-0 fade-in cursor-pointer" style="--delay: 0.2s;">
+                <h2 class="text-2xl font-bold text-center mb-4 opacity-80">✨ Nom du Jour ✨</h2>
+                <div id="daily-name-card" class="card rounded-2xl p-6 max-w-2xl mx-auto flex flex-col md:flex-row items-center gap-6 transition-all duration-300 hover:shadow-yellow-400/20 hover:border-yellow-500/50 hover:-translate-y-1">
+                    <!-- Contenu du Nom du Jour injecté par JS -->
+                </div>
+            </section>
+
+            <!-- Filtres et Recherche -->
+            <div class="sticky top-0 z-30 py-4 glassmorphism">
+                <div class="container mx-auto px-4">
+                    <div class="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
+                        <input type="text" id="searchInput" placeholder="Rechercher par nom, traduction, bienfait..." class="flex-grow bg-transparent border-2 border-gray-600/50 rounded-full py-2 px-5 placeholder:text-gray-400 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition duration-300">
+                        <select id="categoryFilter" class="bg-transparent border-2 border-gray-600/50 rounded-full py-2 px-5 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition duration-300 appearance-none text-center md:text-left">
+                            <option value="all">Toutes les catégories</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grille des Noms -->
+            <div id="namesGrid" class="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+            <p id="noResults" class="text-center opacity-70 text-xl py-20 hidden">Aucun résultat trouvé.</p>
+        </main>
+
+        <footer class="text-center py-8 mt-12"><p class="opacity-50">Créé avec foi et dévotion.</p></footer>
+        <button id="scrollTopBtn" class="hidden fixed bottom-5 right-5 bg-yellow-500/80 backdrop-blur-sm text-white p-3 rounded-full shadow-lg hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all duration-300 hover:scale-110 opacity-0 translate-y-4"><i class="ph-arrow-up-bold text-xl"></i></button>
+    </div>
+
+    <!-- Modale de Détail -->
+    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div id="modal-content" class="card rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col opacity-0"></div>
+    </div>
+
+    <!-- Modale Dhikr -->
+    <div id="dhikr-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div id="dhikr-content" class="text-center relative w-full max-w-md opacity-0">
+             <!-- Contenu injecté par JS -->
+        </div>
+    </div>
+
+    <!-- Conteneur de Notifications (Toast) -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[100] w-full max-w-xs space-y-3"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATASET COMPLET ---
+            const namesOfAllah = [
+              { "id": 1, "arabic": "ٱلْرَّحْمَـٰنُ", "transliteration": "Ar-Rahman", "translation": "Le Tout-Miséricordieux", "benefit": "Celui qui fait preuve d'une miséricorde immense et universelle, englobant toute la création, croyants et non-croyants. L'invoquer ouvre les portes de la miséricorde divine et adoucit le cœur.", "category": "Miséricorde & Bonté", "quran_verse": "Le Tout Miséricordieux S'est établi 'istawâ' sur le Trône. (Ta-Ha, 20:5)" },
+              { "id": 2, "arabic": "ٱلْرَّحِيْمُ", "transliteration": "Ar-Rahim", "translation": "Le Très-Miséricordieux", "benefit": "Celui qui accorde une miséricorde particulière et constante aux croyants. Sa bienveillance est la récompense de la foi et de l'obéissance. Invoquer ce nom renforce la relation avec le Créateur.", "category": "Miséricorde & Bonté", "quran_verse": "Et Il est Miséricordieux envers les croyants. (Al-Ahzab, 33:43)" },
+              { "id": 3, "arabic": "ٱلْمَلِكُ", "transliteration": "Al-Malik", "translation": "Le Souverain", "benefit": "Le Roi absolu dont la souveraineté est parfaite et éternelle. Il gouverne tout sans partage et sans avoir besoin de quiconque. Méditer sur ce nom aide à se détacher des pouvoirs terrestres.", "category": "Pouvoir & Souveraineté", "quran_verse": "Il est Allah, nulle divinité que Lui; Le Souverain (Al-Malik). (Al-Hashr, 59:23)" },
+              { "id": 4, "arabic": "ٱلْقُدُّوسُ", "transliteration": "Al-Quddus", "translation": "Le Saint", "benefit": "La Pureté absolue, exempt de tout défaut, de toute imperfection ou de toute ressemblance avec Sa création. L'invoquer purifie le cœur et l'âme des souillures spirituelles.", "category": "Pureté & Perfection", "quran_verse": "Le Souverain, le Saint (Al-Quddûs), la Paix. (Al-Hashr, 59:23)" },
+              { "id": 5, "arabic": "ٱلْسَّلَامُ", "transliteration": "As-Salam", "translation": "La Paix", "benefit": "La source de toute paix et sécurité. Il est la Paix et c'est de Lui que vient la paix. Invoquer ce nom apporte la tranquillité intérieure et protège du mal et des calamités.", "category": "Paix & Sécurité", "quran_verse": "C'est Lui Allah, nulle divinité que Lui... la Paix (As-Salâm). (Al-Hashr, 59:23)" },
+              { "id": 6, "arabic": "ٱلْمُؤْمِنُ", "transliteration": "Al-Mu'min", "translation": "Le Rassurant", "benefit": "Celui qui accorde la sécurité à Ses créatures et qui confirme la vérité de Ses prophètes. Il est la source de la foi dans le cœur des croyants. Invoquer Son nom amène la paix de l'esprit.", "category": "Paix & Sécurité", "quran_verse": "Le Saint, la Paix, le Rassurant (Al-Mu'min). (Al-Hashr, 59:23)" },
+              { "id": 7, "arabic": "ٱلْمُهَيْمِنُ", "transliteration": "Al-Muhaymin", "translation": "Le Prédominant", "benefit": "Le Gardien, le Témoin et le Dominateur sur toute chose. Rien n'échappe à Sa surveillance. Méditer ce nom aide à se sentir protégé et guidé en permanence.", "category": "Protection & Contrôle", "quran_verse": "Le Rassurant, le Prédominant (Al-Muhaymin). (Al-Hashr, 59:23)" },
+              { "id": 8, "arabic": "ٱلْعَزِيزُ", "transliteration": "Al-'Aziz", "translation": "Le Tout-Puissant", "benefit": "Le Puissant, l'Inégalable, Celui qui ne peut être vaincu. Il est victorieux sur tout. Invoquer ce nom donne la force et la dignité face à l'adversité.", "category": "Pouvoir & Souveraineté", "quran_verse": "Et sache qu'Allah est Puissant et Sage. (Al-Baqarah, 2:209)" },
+              { "id": 9, "arabic": "ٱلْجَبَّارُ", "transliteration": "Al-Jabbar", "translation": "Celui qui contraint", "benefit": "Celui qui a le pouvoir de restaurer ce qui est brisé et de contraindre toute chose à Sa volonté. Il réconforte les cœurs brisés. Invoquer ce nom aide à surmonter les difficultés.", "category": "Pouvoir & Souveraineté", "quran_verse": "Le Tout-Puissant, Celui qui contraint (Al-Jabbâr). (Al-Hashr, 59:23)" },
+              { "id": 10, "arabic": "ٱلْمُتَكَبِّرُ", "transliteration": "Al-Mutakabbir", "translation": "Le Superbe", "benefit": "Celui qui est supérieur à tout et dont la grandeur est inégalée. Il est le seul à mériter la fierté. Méditer ce nom protège de l'arrogance et de l'orgueil.", "category": "Grandeur & Majesté", "quran_verse": "Celui qui contraint, le Superbe (Al-Mutakabbir). (Al-Hashr, 59:23)" },
+              { "id": 11, "arabic": "ٱلْخَالِقُ", "transliteration": "Al-Khaliq", "translation": "Le Créateur", "benefit": "Celui qui a créé toute chose à partir du néant, avec perfection et sans modèle préalable. Invoquer ce nom stimule la créativité et la reconnaissance de la création.", "category": "Création & Origine", "quran_verse": "C'est Lui Allah, le Créateur (Al-Khâliq), Celui qui donne un commencement à tout. (Al-Hashr, 59:24)" },
+              { "id": 12, "arabic": "ٱلْبَارِئُ", "transliteration": "Al-Bari'", "translation": "Le Producteur", "benefit": "Celui qui donne naissance à la création, qui la fait évoluer et la perfectionne. Il est l'initiateur de chaque être. Invoquer ce nom aide à la guérison et au développement.", "category": "Création & Origine", "quran_verse": "Le Créateur, le Producteur (Al-Bâri'). (Al-Hashr, 59:24)" },
+              { "id": 13, "arabic": "ٱلْمُصَوِّرُ", "transliteration": "Al-Musawwir", "translation": "Le Formateur", "benefit": "Celui qui façonne Ses créatures avec des formes et des apparences uniques et parfaites. Méditer sur ce nom renforce l'acceptation de soi et l'appréciation de la beauté.", "category": "Création & Origine", "quran_verse": "Le Producteur, le Formateur (Al-Musawwir). (Al-Hashr, 59:24)" },
+              { "id": 14, "arabic": "ٱلْغَفَّارُ", "transliteration": "Al-Ghaffar", "translation": "Le Grand Pardonneur", "benefit": "Celui qui pardonne sans cesse les péchés de Ses serviteurs, peu importe leur nombre, pourvu qu'ils se repentent sincèrement. Invoquer ce nom aide à obtenir le pardon divin.", "category": "Pardon & Repentir", "quran_verse": "Je suis Grand Pardonneur pour celui qui se repent. (Ta-Ha, 20:82)" },
+              { "id": 15, "arabic": "ٱلْقَهَّارُ", "transliteration": "Al-Qahhar", "translation": "Le Tout-Contraignant", "benefit": "Le Dominateur suprême qui soumet toute la création à Son autorité. Rien ne peut s'opposer à Sa volonté. Invoquer ce nom aide à vaincre ses ennemis et ses propres passions.", "category": "Pouvoir & Souveraineté", "quran_verse": "Dis : 'Allah est le Créateur de toute chose, et c'est Lui l'Unique, le Tout-Contraignant'. (Ar-Ra'd, 13:16)" },
+              { "id": 16, "arabic": "ٱلْوَهَّابُ", "transliteration": "Al-Wahhab", "translation": "Le Donateur Gracieux", "benefit": "Celui qui donne abondamment et sans compter, sans rien attendre en retour. Il est la source de tous les dons. Invoquer ce nom attire les bienfaits et les grâces divines.", "category": "Générosité & Dons", "quran_verse": "Seigneur, ne laisse pas dévier nos cœurs... et accorde-nous Ta miséricorde. C'est Toi, certes, le Grand Donateur ! (Al-Imran, 3:8)" },
+              { "id": 17, "arabic": "ٱلْرَّزَّاقُ", "transliteration": "Ar-Razzaq", "translation": "Le Grand Pourvoyeur", "benefit": "Celui qui pourvoit à la subsistance de toutes Ses créatures, sans exception. Il est la source de toute nourriture, matérielle et spirituelle. Invoquer ce nom facilite l'obtention des moyens de subsistance.", "category": "Générosité & Dons", "quran_verse": "En vérité, c'est Allah qui est le Grand Pourvoyeur, le Détenteur de la force, l'Inébranlable. (Adh-Dhariyat, 51:58)" },
+              { "id": 18, "arabic": "ٱلْفَتَّاحُ", "transliteration": "Al-Fattah", "translation": "Celui qui ouvre", "benefit": "Celui qui ouvre les portes de la miséricorde, du succès et de la connaissance. Il est le Juge qui tranche avec justice. Invoquer ce nom aide à surmonter les obstacles et à trouver des solutions.", "category": "Soutien & Victoire", "quran_verse": "Dis : 'Notre Seigneur nous réunira, puis Il tranchera entre nous, avec la vérité. C'est Lui le Grand Juge, l'Omniscient'. (Saba, 34:26)" },
+              { "id": 19, "arabic": "ٱلْعَلِيمُ", "transliteration": "Al-'Alim", "translation": "L'Omniscient", "benefit": "Celui qui a une connaissance parfaite de toute chose, passée, présente et future, visible et invisible. Rien ne Lui échappe. Méditer sur ce nom encourage l'humilité et la recherche du savoir.", "category": "Science & Sagesse", "quran_verse": "Et Il est avec vous où que vous soyez. Et Allah observe parfaitement ce que vous faites. (Al-Hadid, 57:4)" },
+              { "id": 20, "arabic": "ٱلْقَابِضُ", "transliteration": "Al-Qabid", "translation": "Celui qui retient", "benefit": "Celui qui retient et restreint la subsistance, les âmes ou toute autre chose selon Sa sagesse. Méditer ce nom et son opposé (Al-Basit) aide à comprendre l'équilibre divin.", "category": "Contrôle & Équilibre", "quran_verse": "Allah retient et étend [Ses dons], et c'est à Lui que vous retournerez. (Al-Baqarah, 2:245)" },
+              { "id": 21, "arabic": "ٱلْبَاسِطُ", "transliteration": "Al-Basit", "translation": "Celui qui étend", "benefit": "Celui qui étend et augmente la subsistance, la joie et la miséricorde selon Sa volonté. Il est la source de toute largesse. Invoquer ce nom attire l'abondance et l'aisance.", "category": "Contrôle & Équilibre", "quran_verse": "Allah retient et étend [Ses dons], et c'est à Lui que vous retournerez. (Al-Baqarah, 2:245)" },
+              { "id": 22, "arabic": "ٱلْخَافِضُ", "transliteration": "Al-Khafid", "translation": "Celui qui abaisse", "benefit": "Celui qui abaisse les orgueilleux, les tyrans et les mécréants. Il humilie ceux qui s'opposent à Lui. Méditer sur ce nom est un rappel contre l'arrogance.", "category": "Justice & Jugement", "quran_verse": "Il abaissera (certains), Il élèvera (d'autres). (Al-Waqi'ah, 56:3)" },
+              { "id": 23, "arabic": "ٱلْرَّافِعُ", "transliteration": "Ar-Rafi'", "translation": "Celui qui élève", "benefit": "Celui qui élève le rang des croyants, des humbles et des savants. Il honore ceux qui Lui obéissent. Invoquer ce nom aide à obtenir l'honneur et une position élevée.", "category": "Justice & Jugement", "quran_verse": "Allah élèvera en degrés ceux d'entre vous qui auront cru et ceux qui auront reçu le savoir. (Al-Mujadilah, 58:11)" },
+              { "id": 24, "arabic": "ٱلْمُعِزُّ", "transliteration": "Al-Mu'izz", "translation": "Celui qui donne la puissance", "benefit": "Celui qui donne la puissance, l'honneur et la victoire à qui Il veut parmi Ses serviteurs. La véritable puissance vient de Lui seul. Invoquer ce nom accorde la dignité.", "category": "Pouvoir & Souveraineté", "quran_verse": "Dis : 'Ô Allah, Maître de l'autorité absolue. Tu donnes l'autorité à qui Tu veux, et Tu arraches l'autorité à qui Tu veux; et Tu donnes la puissance à qui Tu veux, et Tu humilies qui Tu veux'. (Al-Imran, 3:26)" },
+              { "id": 25, "arabic": "ٱلْمُذِلُّ", "transliteration": "Al-Mudhill", "translation": "Celui qui humilie", "benefit": "Celui qui humilie et avilit qui Il veut, en particulier ceux qui se rebellent contre Son autorité. Ce nom est un avertissement contre la désobéissance.", "category": "Pouvoir & Souveraineté", "quran_verse": "et Tu donnes la puissance à qui Tu veux, et Tu humilies qui Tu veux. (Al-Imran, 3:26)" },
+              { "id": 26, "arabic": "ٱلْسَّمِيعُ", "transliteration": "As-Sami'", "translation": "L'Audient", "benefit": "Celui qui entend absolument tout, des pensées les plus secrètes aux sons les plus infimes de l'univers. Rien n'échappe à Son ouïe. Invoquer ce nom assure que nos prières sont entendues.", "category": "Perception & Connaissance", "quran_verse": "Certes, Allah est Audient et Clairvoyant. (Al-Hajj, 22:75)" },
+              { "id": 27, "arabic": "ٱلْبَصِيرُ", "transliteration": "Al-Basir", "translation": "Le Clairvoyant", "benefit": "Celui qui voit absolument tout, le visible comme l'invisible, dans les ténèbres les plus profondes comme en pleine lumière. Méditer sur ce nom incite à la droiture, sachant que l'on est toujours observé.", "category": "Perception & Connaissance", "quran_verse": "Et Allah est Clairvoyant sur ce que vous faites. (Al-Baqarah, 2:96)" },
+              { "id": 28, "arabic": "ٱلْحَكَمُ", "transliteration": "Al-Hakam", "translation": "Le Juge", "benefit": "Le Juge suprême et infaillible, dont le jugement est parfait et juste. Il est l'Arbitre ultime entre Ses créatures. Invoquer ce nom aide à accepter le destin et à rechercher la justice.", "category": "Justice & Jugement", "quran_verse": "Ne devrais-je pas désirer un autre juge qu'Allah, alors que c'est Lui qui a fait descendre vers vous le Livre détaillé ? (Al-An'am, 6:114)" },
+              { "id": 29, "arabic": "ٱلْعَدْلُ", "transliteration": "Al-'Adl", "translation": "Le Juste", "benefit": "Celui qui est l'incarnation de la justice absolue. Il est parfaitement équitable dans toutes Ses décisions et n'opprime jamais personne. Méditer ce nom inspire l'équité dans nos propres vies.", "category": "Justice & Jugement", "quran_verse": "La parole de ton Seigneur s'est accomplie en toute vérité et justice. (Al-An'am, 6:115)" },
+              { "id": 30, "arabic": "ٱلْلَّطِيفُ", "transliteration": "Al-Latif", "translation": "Le Subtil et Bienveillant", "benefit": "Celui dont la connaissance est si subtile qu'elle pénètre les choses les plus cachées. Il est doux et bienveillant envers Ses serviteurs. Invoquer ce nom apporte le réconfort et l'aide dans les situations délicates.", "category": "Miséricorde & Bonté", "quran_verse": "Allah est doux envers Ses serviteurs. (Ash-Shura, 42:19)" },
+              { "id": 31, "arabic": "ٱلْخَبِيرُ", "transliteration": "Al-Khabir", "translation": "Le Bien-Informé", "benefit": "Celui qui a une connaissance profonde de la réalité intérieure de toute chose. Il est parfaitement informé de nos intentions et de nos secrets. Méditer ce nom encourage la sincérité.", "category": "Science & Sagesse", "quran_verse": "C'est Lui le Sage, le Parfaitement Connaisseur. (Al-An'am, 6:73)" },
+              { "id": 32, "arabic": "ٱلْحَلِيمُ", "transliteration": "Al-Halim", "translation": "Le Clément", "benefit": "Celui qui est patient et indulgent. Il ne se hâte pas de punir les pécheurs, leur laissant le temps de se repentir. Invoquer ce nom développe la patience et la maîtrise de soi.", "category": "Sagesse & Vertu", "quran_verse": "Et sachez qu'Allah sait ce qu'il y a dans vos âmes. Prenez donc garde à Lui. Et sachez qu'Allah est Pardonneur et Plein de mansuétude. (Al-Baqarah, 2:235)" },
+              { "id": 33, "arabic": "ٱلْعَظِيمُ", "transliteration": "Al-'Azim", "translation": "L'Immense", "benefit": "Celui dont la grandeur, la majesté et la puissance sont absolues et au-delà de toute compréhension. Tout ce qui est grand paraît infime à côté de Lui. Invoquer ce nom remplit le cœur de crainte respectueuse.", "category": "Grandeur & Majesté", "quran_verse": "Il est le Très-Haut, l'Immense. (Al-Baqarah, 2:255)" },
+              { "id": 34, "arabic": "ٱلْغَفُورُ", "transliteration": "Al-Ghafur", "translation": "Le Pardonneur", "benefit": "Celui qui pardonne abondamment. Son pardon efface les péchés et couvre les fautes de ceux qui se tournent vers Lui. Ce nom est une source d'espoir inépuisable.", "category": "Pardon & Repentir", "quran_verse": "Informe Mes serviteurs que c'est Moi le Pardonneur, le Très Miséricordieux. (Al-Hijr, 15:49)" },
+              { "id": 35, "arabic": "ٱلْشَّكُورُ", "transliteration": "Ash-Shakur", "translation": "Le Très-Reconnaissant", "benefit": "Celui qui apprécie et récompense abondamment les bonnes actions, même les plus petites. Il donne beaucoup pour peu d'efforts. Invoquer ce nom enseigne la gratitude.", "category": "Générosité & Dons", "quran_verse": "Afin qu'Il leur donne leur pleine récompense et y ajoute de Sa grâce. Il est Pardonneur et Reconnaissant. (Fatir, 35:30)" },
+              { "id": 36, "arabic": "ٱلْعَلِيُّ", "transliteration": "Al-'Aliyy", "translation": "Le Très-Haut", "benefit": "Celui qui est au-dessus de tout en termes de rang, de statut et de pouvoir. Rien n'est au-dessus de Lui. Méditer sur Sa transcendance inspire l'humilité.", "category": "Grandeur & Majesté", "quran_verse": "Et Il est le Très-Haut, le Très-Grand. (Saba, 34:23)" },
+              { "id": 37, "arabic": "ٱلْكَبِيرُ", "transliteration": "Al-Kabir", "translation": "Le Grand", "benefit": "Celui qui est plus grand que tout. Sa grandeur est absolue et intrinsèque à Son Essence. Il est le plus grand en savoir, en pouvoir et en majesté.", "category": "Grandeur & Majesté", "quran_verse": "C'est Lui le Connaisseur de ce qui est caché et de ce qui est apparent, le Grand, le Sublime. (Ar-Ra'd, 13:9)" },
+              { "id": 38, "arabic": "ٱلْحَفِيظُ", "transliteration": "Al-Hafiz", "translation": "Le Gardien", "benefit": "Celui qui préserve et protège toute la création. Il garde les actions de Ses serviteurs et les protège du mal. Invoquer ce nom apporte un sentiment de sécurité totale.", "category": "Protection & Contrôle", "quran_verse": "Mon Seigneur est gardien de toute chose. (Hud, 11:57)" },
+              { "id": 39, "arabic": "ٱلْمُقِيتُ", "transliteration": "Al-Muqit", "translation": "Le Nourricier", "benefit": "Celui qui fournit la nourriture et la subsistance à tous les êtres. Il est aussi le Puissant qui a le pouvoir sur toute chose. Invoquer ce nom assure la subsistance.", "category": "Générosité & Dons", "quran_verse": "Et quiconque intercède d'une bonne intercession en aura une part ; et quiconque intercède d'une mauvaise intercession en portera une part de responsabilité. Et Allah est Puissant sur toute chose. (An-Nisa, 4:85)" },
+              { "id": 40, "arabic": "ٱلْحَسِيبُ", "transliteration": "Al-Hasib", "translation": "Celui qui règle les comptes", "benefit": "Celui qui suffit à Ses serviteurs et qui tiendra les comptes de toutes les actions au Jour du Jugement. Invoquer ce nom encourage l'auto-examen et la confiance en Allah comme suffisant.", "category": "Justice & Jugement", "quran_verse": "Et quand on vous adresse un salut, saluez d'une façon meilleure, ou bien rendez-le simplement. Certes, Allah tient compte de tout. (An-Nisa, 4:86)" },
+              { "id": 41, "arabic": "ٱلْجَلِيلُ", "transliteration": "Al-Jalil", "translation": "Le Majestueux", "benefit": "Celui qui possède la grandeur et la majesté absolues. Ses attributs sont parfaits et sublimes. Méditer ce nom inspire une profonde révérence.", "category": "Grandeur & Majesté", "quran_verse": "Béni soit le nom de ton Seigneur, plein de majesté et de noblesse ! (Ar-Rahman, 55:78)" },
+              { "id": 42, "arabic": "ٱلْكَرِيمُ", "transliteration": "Al-Karim", "translation": "Le Généreux", "benefit": "Celui qui est noble et généreux. Il donne sans qu'on Lui demande et pardonne sans reproche. Sa générosité est sans limites. Invoquer ce nom encourage la générosité.", "category": "Générosité & Dons", "quran_verse": "Ô homme ! Qu'est-ce qui t'a trompé au sujet de ton Seigneur, le Généreux ? (Al-Infitar, 82:6)" },
+              { "id": 43, "arabic": "ٱلْرَّقِيبُ", "transliteration": "Ar-Raqib", "translation": "Le Vigilant", "benefit": "L'Observateur qui veille sur tout et dont rien n'échappe à l'attention. Il est témoin de toutes nos actions et pensées. Méditer ce nom renforce la conscience d'Allah (Taqwa).", "category": "Perception & Connaissance", "quran_verse": "Et Allah est témoin de toute chose. (Al-Mujadilah, 58:6)" },
+              { "id": 44, "arabic": "ٱلْمُجِيبُ", "transliteration": "Al-Mujib", "translation": "Celui qui exauce", "benefit": "Celui qui répond aux prières et aux invocations de Ses serviteurs. Il est proche et exauce celui qui L'appelle. Invoquer ce nom avec conviction assure une réponse divine.", "category": "Soutien & Victoire", "quran_verse": "Et quand Mes serviteurs t'interrogent sur Moi, alors Je suis tout proche : Je réponds à l'appel de celui qui Me prie quand il Me prie. (Al-Baqarah, 2:186)" },
+              { "id": 45, "arabic": "ٱلْوَاسِعُ", "transliteration": "Al-Wasi'", "translation": "L'Ample", "benefit": "Celui dont la miséricorde, la connaissance, et la générosité sont vastes et sans limites. Son immensité englobe tout. Invoquer ce nom élargit le cœur et l'esprit.", "category": "Grandeur & Majesté", "quran_verse": "A Allah seul appartiennent l'Est et l'Ouest. Où que vous vous tourniez, la Face d'Allah est donc là, car Allah a la grâce immense et Il est Omniscient. (Al-Baqarah, 2:115)" },
+              { "id": 46, "arabic": "ٱلْحَكِيمُ", "transliteration": "Al-Hakim", "translation": "Le Sage", "benefit": "Celui qui place chaque chose à sa juste place. Tous Ses actes, décrets et lois sont empreints d'une sagesse parfaite. Méditer sur ce nom aide à faire confiance au plan divin.", "category": "Science & Sagesse", "quran_verse": "Et c'est Lui le Puissant, le Sage. (Ibrahim, 14:4)" },
+              { "id": 47, "arabic": "ٱلْوَدُودُ", "transliteration": "Al-Wadud", "translation": "Le Bien-Aimant", "benefit": "Celui qui aime Ses serviteurs pieux et qui est aimé par eux. Son amour est la source de toute affection sincère. Invoquer ce nom attire l'amour d'Allah et l'amour entre les gens.", "category": "Miséricorde & Bonté", "quran_verse": "Et c'est Lui le Pardonneur, le Tout Affectueux. (Al-Buruj, 85:14)" },
+              { "id": 48, "arabic": "ٱلْمَجِيدُ", "transliteration": "Al-Majid", "translation": "Le Glorieux", "benefit": "Celui qui est glorieux par Ses actions et Sa noblesse. Il est loué pour Sa générosité et Sa grandeur. Sa gloire est immense et parfaite.", "category": "Grandeur & Majesté", "quran_verse": "Maître du Trône, le Tout Glorieux. (Al-Buruj, 85:15)" },
+              { "id": 49, "arabic": "ٱلْبَاعِثُ", "transliteration": "Al-Ba'ith", "translation": "Celui qui ressuscite", "benefit": "Celui qui ressuscitera les morts au Jour de la Résurrection. Il donne la vie après la mort. Méditer ce nom renforce la foi en l'au-delà.", "category": "Vie & Mort", "quran_verse": "Et que l'Heure arrivera, pas de doute à son sujet, et qu'Allah ressuscitera ceux qui sont dans les tombes. (Al-Hajj, 22:7)" },
+              { "id": 50, "arabic": "ٱلْشَّهِيدُ", "transliteration": "Ash-Shahid", "translation": "Le Témoin", "benefit": "Celui qui est témoin de toute chose. Rien ne Lui est caché. Il témoignera pour ou contre Ses créatures au Jour du Jugement. Ce nom incite à l'honnêteté et à la droiture.", "category": "Perception & Connaissance", "quran_verse": "Dis : 'Allah suffit comme témoin entre moi et vous'. (Al-Ankabut, 29:52)" },
+              { "id": 51, "arabic": "ٱلْحَقُّ", "transliteration": "Al-Haqq", "translation": "Le Vrai", "benefit": "Celui dont l'existence est la seule véritable réalité. Il est la Vérité absolue, et tout ce qui vient de Lui est vérité. Invoquer ce nom affermit la foi et aide à distinguer le vrai du faux.", "category": "Vérité & Réalité", "quran_verse": "C'est ainsi qu'Allah est la Vérité, et que ce qu'ils invoquent en dehors de Lui est le Faux. (Luqman, 31:30)" },
+              { "id": 52, "arabic": "ٱلْوَكِيلُ", "transliteration": "Al-Wakil", "translation": "Le Garant", "benefit": "Celui à qui l'on peut se confier en toute sérénité. Il est le meilleur gestionnaire des affaires de Ses créatures. S'en remettre à Lui (Tawakkul) apporte la paix et la réussite.", "category": "Soutien & Victoire", "quran_verse": "Allah nous suffit; Il est le meilleur Garant. (Al-Imran, 3:173)" },
+              { "id": 53, "arabic": "ٱلْقَوِيُّ", "transliteration": "Al-Qawiyy", "translation": "Le Fort", "benefit": "Celui qui possède la force parfaite et inépuisable. Sa force est absolue et ne connaît aucune faiblesse. Invoquer ce nom donne la force face aux épreuves physiques et spirituelles.", "category": "Pouvoir & Souveraineté", "quran_verse": "Certes, Allah est Fort et Puissant. (Al-Hajj, 22:40)" },
+              { "id": 54, "arabic": "ٱلْمَتِينُ", "transliteration": "Al-Matin", "translation": "L'Inébranlable", "benefit": "Celui dont la force est si ferme qu'elle est inébranlable. Il ne connaît ni fatigue ni lassitude. Sa puissance est constante et immuable.", "category": "Pouvoir & Souveraineté", "quran_verse": "En vérité, c'est Allah qui est le Grand Pourvoyeur, le Détenteur de la force, l'Inébranlable. (Adh-Dhariyat, 51:58)" },
+              { "id": 55, "arabic": "ٱلْوَلِيُّ", "transliteration": "Al-Waliyy", "translation": "Le Protecteur", "benefit": "L'Allié, l'Ami et le Protecteur des croyants. Il les soutient, les guide et les mène des ténèbres à la lumière. Invoquer ce nom renforce le sentiment d'être soutenu par Allah.", "category": "Soutien & Victoire", "quran_verse": "Allah est le défenseur de ceux qui ont la foi : Il les fait sortir des ténèbres à la lumière. (Al-Baqarah, 2:257)" },
+              { "id": 56, "arabic": "ٱلْحَمِيدُ", "transliteration": "Al-Hamid", "translation": "Le Digne de Louange", "benefit": "Celui qui est digne de toutes les louanges, qu'Il soit loué ou non. Toutes les louanges Lui reviennent de droit pour Sa perfection. Invoquer ce nom remplit le cœur de gratitude.", "category": "Grandeur & Majesté", "quran_verse": "Et sachez qu'Allah se suffit à Lui-même et qu'Il est digne de louange. (Al-Baqarah, 2:267)" },
+              { "id": 57, "arabic": "ٱلْمُحْصِى", "transliteration": "Al-Muhsi", "translation": "Celui qui dénombre", "benefit": "Celui qui connaît et dénombre toute chose, sans exception. Rien n'échappe à Son compte, du plus petit atome aux plus grandes galaxies. Méditer ce nom incite à la vigilance.", "category": "Science & Sagesse", "quran_verse": "afin qu'Il sache s'ils ont bien transmis les messages de leur Seigneur. Il cerne tout ce qui est avec eux et dénombre exactement toute chose. (Al-Jinn, 72:28)" },
+              { "id": 58, "arabic": "ٱلْمُبْدِئُ", "transliteration": "Al-Mubdi'", "translation": "L'Initiateur", "benefit": "Celui qui a initié la création à partir de rien. Il est à l'origine de toute existence. Il est Celui qui commence.", "category": "Création & Origine", "quran_verse": "N'est-ce pas Lui qui commence la création, puis la refait ? (An-Naml, 27:64)" },
+              { "id": 59, "arabic": "ٱلْمُعِيدُ", "transliteration": "Al-Mu'id", "translation": "Celui qui redonne l'existence", "benefit": "Celui qui ramènera toute la création à la vie après la mort. Il a le pouvoir de recommencer la création. Méditer ce nom renforce la certitude en la Résurrection.", "category": "Vie & Mort", "quran_verse": "Le jour où Nous plierons le ciel comme on plie un rouleau de livres. Tout comme Nous avons commencé la première création, ainsi Nous la répéterons. (Al-Anbiya, 21:104)" },
+              { "id": 60, "arabic": "ٱلْمُحْيِى", "transliteration": "Al-Muhyi", "translation": "Celui qui donne la vie", "benefit": "Celui qui donne la vie à toute chose. Il est la source de toute vie, qu'elle soit physique ou spirituelle. Invoquer ce nom peut revivifier un cœur endurci.", "category": "Vie & Mort", "quran_verse": "C'est Lui qui donne la vie et qui donne la mort. (Yunus, 10:56)" },
+              { "id": 61, "arabic": "ٱلْمُمِيتُ", "transliteration": "Al-Mumit", "translation": "Celui qui donne la mort", "benefit": "Celui qui décrète la mort pour toute créature. La mort est une transition sous Son commandement absolu. Méditer ce nom aide à se préparer à l'inévitable et à se détacher de ce monde.", "category": "Vie & Mort", "quran_verse": "Comment pouvez-vous renier Allah alors qu'Il vous a donné la vie, quand vous en étiez privés ? Puis Il vous fera mourir. (Al-Baqarah, 2:28)" },
+              { "id": 62, "arabic": "ٱلْحَىُّ", "transliteration": "Al-Hayy", "translation": "Le Vivant", "benefit": "Le Vivant par essence, dont la vie est parfaite, éternelle et ne dépend de rien. Il est la source de toute vie. Invoquer ce nom, surtout avec 'Al-Qayyum', est une puissante source d'énergie spirituelle.", "category": "Essence & Être", "quran_verse": "Allah ! Point de divinité à part Lui, le Vivant, Celui qui subsiste par lui-même. (Al-Baqarah, 2:255)" },
+              { "id": 63, "arabic": "ٱلْقَيُّومُ", "transliteration": "Al-Qayyum", "translation": "L'Immuable", "benefit": "Celui qui subsiste par Lui-même et par qui tout subsiste. Il est indépendant de tout et tout dépend de Lui. Invoquer ce nom apporte stabilité et confiance.", "category": "Essence & Être", "quran_verse": "Le Vivant, Celui qui subsiste par lui-même 'Al-Qayyûm'. (Al-Baqarah, 2:255)" },
+              { "id": 64, "arabic": "ٱلْوَاجِدُ", "transliteration": "Al-Wajid", "translation": "Celui qui trouve", "benefit": "Celui qui trouve tout ce qu'Il veut, quand Il le veut. Il n'a besoin de rien et ne manque de rien. Il est la richesse absolue.", "category": "Essence & Être", "quran_verse": "Ne t'a-t-Il pas trouvé orphelin ? Alors Il t'a accueilli ! (Ad-Duha, 93:6)" },
+              { "id": 65, "arabic": "ٱلْمَاجِدُ", "transliteration": "Al-Majid", "translation": "Le Noble", "benefit": "Celui qui est illustre et noble. Sa générosité et Sa gloire sont immenses. Ce nom est très proche d'Al-Majid, mais insiste sur la noblesse intrinsèque.", "category": "Grandeur & Majesté", "quran_verse": "La miséricorde d'Allah et Ses bénédictions soient sur vous, gens de cette maison ! Il est certes Digne de louange et de glorification ! (Hud, 11:73)" },
+              { "id": 66, "arabic": "ٱلْوَاحِدُ", "transliteration": "Al-Wahid", "translation": "L'Unique", "benefit": "L'Unique dans Son essence, Ses attributs et Ses actions. Il n'a ni associé, ni égal, ni semblable. Méditer sur ce nom est le fondement du monothéisme (Tawhid).", "category": "Unicité", "quran_verse": "Dis : 'Il est Allah, Unique'. (Al-Ikhlas, 112:1)" },
+              { "id": 67, "arabic": "ٱلْأَحَدُ", "transliteration": "Al-Ahad", "translation": "Le Seul", "benefit": "L'Un, l'Indivisible. Ce nom souligne encore plus l'unicité absolue et l'incomparabilité d'Allah. C'est l'affirmation la plus pure de l'Unicité.", "category": "Unicité", "quran_verse": "Dis : 'Il est Allah, Unique'. (Al-Ikhlas, 112:1)" },
+              { "id": 68, "arabic": "ٱلْصَّمَدُ", "transliteration": "As-Samad", "translation": "Le Soutien Universel", "benefit": "Le Maître absolu dont tout dépend, alors qu'Il ne dépend de rien. Il est le refuge ultime vers qui toutes les créatures se tournent pour leurs besoins. Invoquer ce nom apporte l'indépendance vis-à-vis de la création.", "category": "Essence & Être", "quran_verse": "Allah, le Soutien Universel à qui on s'adresse pour tout. (Al-Ikhlas, 112:2)" },
+              { "id": 69, "arabic": "ٱلْقَادِرُ", "transliteration": "Al-Qadir", "translation": "Le Puissant", "benefit": "Celui qui a le pouvoir et la capacité de faire tout ce qu'Il veut, selon Sa sagesse. Rien ne Lui est impossible. Méditer sur ce nom renforce la foi en la puissance divine.", "category": "Pouvoir & Souveraineté", "quran_verse": "Dis : 'C'est Lui qui est capable de vous envoyer un châtiment d'en haut'. (Al-An'am, 6:65)" },
+              { "id": 70, "arabic": "ٱلْمُقْتَدِرُ", "transliteration": "Al-Muqtadir", "translation": "Le Tout-Puissant Déterminant", "benefit": "Celui dont la puissance est suprême et qui décrète toute chose. Sa capacité est absolue et dominante. Ce nom exprime une puissance encore plus grande qu'Al-Qadir.", "category": "Pouvoir & Souveraineté", "quran_verse": "auprès d'un Souverain Tout-Puissant. (Al-Qamar, 54:55)" },
+              { "id": 71, "arabic": "ٱلْمُقَدِّمُ", "transliteration": "Al-Muqaddim", "translation": "Celui qui met en avant", "benefit": "Celui qui avance et place qui Il veut en avant, que ce soit dans le temps, le lieu ou le rang. Tout est selon Son décret.", "category": "Contrôle & Équilibre", "quran_verse": "Ce qu'Allah accorde en sa faveur aux gens comme miséricorde, nul ne peut le retenir. Et ce qu'Il retient, nul ne peut le dispenser après Lui. (Fatir, 35:2)" },
+              { "id": 72, "arabic": "ٱلْمُؤَخِّرُ", "transliteration": "Al-Mu'akhkhir", "translation": "Celui qui met en arrière", "benefit": "Celui qui retarde et place qui Il veut en arrière. Il repousse ce qu'Il veut et retarde les châtiments par clémence.", "category": "Contrôle & Équilibre", "quran_verse": "Si Allah s'en prenait aux gens pour ce qu'ils acquièrent, Il ne laisserait à la surface [de la terre] aucun être vivant. Mais Il leur donne un délai jusqu'à un terme fixé. (Fatir, 35:45)" },
+              { "id": 73, "arabic": "ٱلْأَوَّلُ", "transliteration": "Al-Awwal", "translation": "Le Premier", "benefit": "Le Premier, Celui qui existe avant toute chose. Son existence n'a pas de commencement. Méditer sur ce nom ancre la foi en l'éternité d'Allah.", "category": "Éternité & Existence", "quran_verse": "C'est Lui le Premier et le Dernier, l'Apparent et le Caché. (Al-Hadid, 57:3)" },
+              { "id": 74, "arabic": "ٱلْآخِرُ", "transliteration": "Al-Akhir", "translation": "Le Dernier", "benefit": "Le Dernier, Celui qui subsistera après la disparition de toute la création. Son existence n'a pas de fin. Méditer ce nom rappelle la nature éphémère de ce monde.", "category": "Éternité & Existence", "quran_verse": "C'est Lui le Premier et le Dernier, l'Apparent et le Caché. (Al-Hadid, 57:3)" },
+              { "id": 75, "arabic": "ٱلْظَّاهِرُ", "transliteration": "Az-Zahir", "translation": "L'Apparent", "benefit": "Celui dont l'existence est évidente à travers les signes de Sa création. Il est au-dessus de tout et Sa puissance est manifeste. Tout dans l'univers témoigne de Lui.", "category": "Éternité & Existence", "quran_verse": "C'est Lui le Premier et le Dernier, l'Apparent et le Caché. (Al-Hadid, 57:3)" },
+              { "id": 76, "arabic": "ٱلْبَاطِنُ", "transliteration": "Al-Batin", "translation": "Le Caché", "benefit": "Celui dont l'essence est cachée à nos sens et à notre entendement. Il est plus proche de nous que notre propre veine jugulaire. Méditer ce nom encourage la recherche spirituelle.", "category": "Éternité & Existence", "quran_verse": "C'est Lui le Premier et le Dernier, l'Apparent et le Caché. (Al-Hadid, 57:3)" },
+              { "id": 77, "arabic": "ٱلْوَالِي", "transliteration": "Al-Wali", "translation": "Le Maître", "benefit": "Le Gouverneur qui gère et administre toute la création. Il est le Maître et le Seigneur de toutes choses. Invoquer ce nom aide à se soumettre à la volonté divine.", "category": "Pouvoir & Souveraineté", "quran_verse": "Il n'a pas d'associé en la royauté, et Il n'a pas de protecteur contre l'humiliation. (Al-Isra, 17:111)" },
+              { "id": 78, "arabic": "ٱلْمُتَعَالِي", "transliteration": "Al-Muta'ali", "translation": "Le Sublime", "benefit": "Celui qui est exalté au-dessus de toute la création. Sa transcendance est absolue, Il est exempt de toute imperfection ou ressemblance avec ce qu'il a créé.", "category": "Grandeur & Majesté", "quran_verse": "Le Connaisseur de ce qui est caché et de ce qui est apparent, le Grand, le Sublime. (Ar-Ra'd, 13:9)" },
+              { "id": 79, "arabic": "ٱلْبَرُّ", "transliteration": "Al-Barr", "translation": "Le Bienfaisant", "benefit": "La source de toute bonté et bienfaisance. Sa piété envers Ses créatures est immense. Il récompense la vertu. Invoquer ce nom attire la bonté d'Allah.", "category": "Miséricorde & Bonté", "quran_verse": "Nous L'invoquions auparavant. C'est Lui certes le Bienveillant, le Très Miséricordieux. (At-Tur, 52:28)" },
+              { "id": 80, "arabic": "ٱلْتَّوَّابُ", "transliteration": "At-Tawwab", "translation": "Celui qui accepte le repentir", "benefit": "Celui qui accepte continuellement le repentir de Ses serviteurs et leur pardonne. Il facilite le chemin du retour vers Lui. Ce nom est une porte d'espoir toujours ouverte.", "category": "Pardon & Repentir", "quran_verse": "Et c'est Lui qui agrée le repentir de Ses serviteurs, et qui pardonne les méfaits. (Ash-Shura, 42:25)" },
+              { "id": 81, "arabic": "ٱلْمُنْتَقِمُ", "transliteration": "Al-Muntaqim", "translation": "Le Vengeur", "benefit": "Celui qui châtie les coupables et les oppresseurs avec une justice parfaite, après avertissement et clémence. Sa vengeance est un acte de justice divine. Ce nom est un réconfort pour les opprimés.", "category": "Justice & Jugement", "quran_verse": "Le jour où Nous userons de la plus grande violence, Nous Nous vengerons. (Ad-Dukhan, 44:16)" },
+              { "id": 82, "arabic": "ٱلْعَفُوُّ", "transliteration": "Al-'Afuww", "translation": "L'Indulgent", "benefit": "Celui qui efface complètement les péchés, comme s'ils n'avaient jamais existé. Son pardon est plus complet que celui d'Al-Ghafur. Invoquer ce nom, surtout durant la Nuit du Destin, est très recommandé.", "category": "Pardon & Repentir", "quran_verse": "Voilà. Et quiconque riposte d'une manière égale à l'offense subie, et est ensuite victime d'un nouvel outrage, Allah l'aidera, car Allah est Pardonneur et Absoluteur. (Al-Hajj, 22:60)" },
+              { "id": 83, "arabic": "ٱلْرَّؤُوفُ", "transliteration": "Ar-Ra'uf", "translation": "Le Très-Compatissant", "benefit": "Celui qui a une compassion et une tendresse immenses envers Ses créatures. Sa miséricorde prévient la souffrance. Invoquer ce nom adoucit le cœur et apporte le réconfort.", "category": "Miséricorde & Bonté", "quran_verse": "Et Il est Compatissant et Miséricordieux envers les croyants. (At-Tawbah, 9:117)" },
+              { "id": 84, "arabic": "مَالِكُ ٱلْمُلْكِ", "transliteration": "Malik-ul-Mulk", "translation": "Le Maître du Royaume", "benefit": "Le possesseur de toute souveraineté. Il donne et retire le pouvoir à qui Il veut. Son royaume est absolu et éternel. Méditer ce nom libère de l'attachement au pouvoir terrestre.", "category": "Pouvoir & Souveraineté", "quran_verse": "Dis : 'Ô Allah, Maître de l'autorité absolue. Tu donnes l'autorité à qui Tu veux'. (Al-Imran, 3:26)" },
+              { "id": 85, "arabic": "ذُو ٱلْجَلَالِ وَٱلْإِكْرَامِ", "transliteration": "Dhul-Jalali wal-Ikram", "translation": "Le Détenteur de la Majesté et de la Générosité", "benefit": "Celui qui possède à la fois la majesté absolue qui inspire la crainte, et la générosité infinie qui inspire l'amour. Invoquer ce nom est une manière complète de s'adresser à Allah.", "category": "Grandeur & Majesté", "quran_verse": "Béni soit le nom de ton Seigneur, plein de majesté et de noblesse ! (Ar-Rahman, 55:78)" },
+              { "id": 86, "arabic": "ٱلْمُقْسِطُ", "transliteration": "Al-Muqsit", "translation": "L'Équitable", "benefit": "Celui qui établit la justice la plus parfaite pour tous, croyants et non-croyants, opprimés et oppresseurs. Il est l'incarnation de l'équité. Invoquer ce nom aide à être juste dans ses jugements.", "category": "Justice & Jugement", "quran_verse": "Allah atteste, et aussi les Anges et les doués de science, qu'il n'y a point de divinité à part Lui, le Mainteneur de la justice. (Al-Imran, 3:18)" },
+              { "id": 87, "arabic": "ٱلْجَامِعُ", "transliteration": "Al-Jami'", "translation": "Le Rassembleur", "benefit": "Celui qui rassemblera toute l'humanité au Jour du Jugement. Il réunit également les choses dispersées, comme les cœurs des croyants. Invoquer ce nom aide à retrouver ce qui est perdu.", "category": "Justice & Jugement", "quran_verse": "Notre Seigneur, c'est Toi qui rassembleras les gens, un jour en quoi il n'y a point de doute. (Al-Imran, 3:9)" },
+              { "id": 88, "arabic": "ٱلْغَنِيُّ", "transliteration": "Al-Ghaniyy", "translation": "Le Riche par Lui-même", "benefit": "Celui qui se suffit à Lui-même et n'a besoin de rien ni de personne. Toute la création a besoin de Lui. Méditer ce nom apporte le contentement et libère de la cupidité.", "category": "Essence & Être", "quran_verse": "Ô hommes, vous êtes les indigents ayant besoin d'Allah, et c'est Allah, Lui qui se suffit à Soi-même, le Digne de louange. (Fatir, 35:15)" },
+              { "id": 89, "arabic": "ٱلْمُغْنِي", "transliteration": "Al-Mughni", "translation": "Celui qui enrichit", "benefit": "Celui qui donne la richesse et la suffisance à Ses serviteurs. Il est la source de toute richesse, matérielle et spirituelle. Invoquer ce nom aide à atteindre l'indépendance financière et spirituelle.", "category": "Générosité & Dons", "quran_verse": "Et que c'est Lui qui enrichit et qui accorde la suffisance. (An-Najm, 53:48)" },
+              { "id": 90, "arabic": "ٱلْمَانِعُ", "transliteration": "Al-Mani'", "translation": "Le Défenseur", "benefit": "Celui qui empêche et retient les calamités pour protéger Ses serviteurs. Il prévient le mal selon Sa sagesse. Invoquer ce nom est une protection contre les dangers.", "category": "Protection & Contrôle", "quran_verse": "Ce qu'Allah accorde en sa faveur aux gens comme miséricorde, nul ne peut le retenir. Et ce qu'Il retient, nul ne peut le dispenser après Lui. (Fatir, 35:2)" },
+              { "id": 91, "arabic": "ٱلْضَّارُّ", "transliteration": "Ad-Darr", "translation": "Celui qui peut nuire", "benefit": "Celui qui a le pouvoir de créer le préjudice et l'épreuve comme un moyen de tester, de purifier ou de punir, toujours avec une sagesse infinie. Ce nom est généralement invoqué avec 'An-Nafi' pour comprendre l'équilibre divin.", "category": "Contrôle & Équilibre", "quran_verse": "Et si Allah fait qu'un malheur te touche, nul ne peut l'écarter en dehors de Lui. (Al-An'am, 6:17)" },
+              { "id": 92, "arabic": "ٱلْنَّافِعُ", "transliteration": "An-Nafi'", "translation": "Celui qui accorde le profit", "benefit": "Celui qui est la source de tout bienfait et de tout ce qui est profitable. Tout le bien vient de Lui. Invoquer ce nom attire les bénéfices et le succès.", "category": "Contrôle & Équilibre", "quran_verse": "Et si Allah veut t'accorder un bien, nul ne peut repousser Sa grâce. (Yunus, 10:107)" },
+              { "id": 93, "arabic": "ٱلْنُّورُ", "transliteration": "An-Nur", "translation": "La Lumière", "benefit": "La Lumière des cieux et de la terre. Il guide qui Il veut vers Sa lumière. Il est la source de toute lumière physique et de toute guidance spirituelle. Invoquer ce nom illumine le cœur et l'esprit.", "category": "Guidance & Lumière", "quran_verse": "Allah est la Lumière des cieux et de la terre. (An-Nur, 24:35)" },
+              { "id": 94, "arabic": "ٱلْهَادِي", "transliteration": "Al-Hadi", "translation": "Le Guide", "benefit": "Celui qui guide Ses créatures vers le bien et vers le droit chemin. La guidance ultime ne vient que de Lui. Invoquer ce nom est essentiel pour rester sur la voie de la droiture.", "category": "Guidance & Lumière", "quran_verse": "Et ton Seigneur suffit comme guide et comme secours. (Al-Furqan, 25:31)" },
+              { "id": 95, "arabic": "ٱلْبَدِيعُ", "transliteration": "Al-Badi'", "translation": "L'Inventeur", "benefit": "Le Créateur originel qui a inventé les cieux et la terre sans aucun modèle préalable. Sa création est unique et incomparable. Méditer ce nom éveille l'admiration pour l'originalité de la création.", "category": "Création & Origine", "quran_verse": "Créateur des cieux et de la terre. (Al-Baqarah, 2:117)" },
+              { "id": 96, "arabic": "ٱلْبَاقِي", "transliteration": "Al-Baqi", "translation": "Le Permanent", "benefit": "Celui qui est éternel et dont l'existence ne cesse jamais. Tout est périssable sauf Sa Face. Ce nom rappelle la permanence d'Allah face à la fugacité de la création.", "category": "Éternité & Existence", "quran_verse": "(Seule) subsistera La Face de ton Seigneur, plein de majesté et de noblesse. (Ar-Rahman, 55:27)" },
+              { "id": 97, "arabic": "ٱلْوَارِثُ", "transliteration": "Al-Warith", "translation": "L'Héritier", "benefit": "Celui qui hérite de toute la création après sa disparition. Tout Lui appartient et tout Lui reviendra. Méditer ce nom aide à se détacher des possessions matérielles.", "category": "Éternité & Existence", "quran_verse": "Et c'est bien Nous qui donnons la vie et donnons la mort, et c'est Nous qui sommes l'Héritier. (Al-Hijr, 15:23)" },
+              { "id": 98, "arabic": "ٱلْرَّشِيدُ", "transliteration": "Ar-Rashid", "translation": "Le Bien-Guidé", "benefit": "Celui qui guide avec sagesse et droiture. Ses décisions sont toujours justes et mènent au bien. Il est le Maître de la rectitude. Invoquer ce nom aide à prendre les bonnes décisions.", "category": "Guidance & Lumière", "quran_verse": "Quiconque croit en Allah, Il guide son cœur. (At-Taghabun, 64:11)" },
+              { "id": 99, "arabic": "ٱلْصَّبُورُ", "transliteration": "As-Sabur", "translation": "Le Patient", "benefit": "Le Très-Patient, qui ne se hâte pas de punir et donne à chacun le temps de se repentir. Il agit au moment parfait, avec une patience infinie. Méditer sur ce nom enseigne la patience et l'endurance face aux épreuves.", "category": "Sagesse & Vertu", "quran_verse": "Sois patient. Ta patience [ne vient] qu'avec l'aide d'Allah. (An-Nahl, 16:127)" }
+            ];
+
+            // --- APP STATE ---
+            const App = {
+                state: {
+                    favorites: JSON.parse(localStorage.getItem('allahNamesFavorites')) || [],
+                    currentFilter: { term: '', category: 'all', showFavorites: false },
+                },
+                
+                // --- DOM ELEMENTS ---
+                dom: {
+                    app: document.getElementById('app'),
+                    preloader: document.getElementById('preloader'),
+                    preloaderBar: document.getElementById('preloader-bar'),
+                    themeToggle: document.getElementById('theme-toggle'),
+                    themeIcon: document.getElementById('theme-icon'),
+                    background: document.getElementById('background-parallax'),
+                    namesGrid: document.getElementById('namesGrid'),
+                    searchInput: document.getElementById('searchInput'),
+                    categoryFilter: document.getElementById('categoryFilter'),
+                    noResults: document.getElementById('noResults'),
+                    scrollTopBtn: document.getElementById('scrollTopBtn'),
+                    favoriteToggle: document.getElementById('favorite-toggle'),
+                    favoriteCount: document.getElementById('favorite-count'),
+                    randomNameBtn: document.getElementById('randomNameBtn'),
+                    modal: document.getElementById('modal'),
+                    modalContent: document.getElementById('modal-content'),
+                    dhikrModal: document.getElementById('dhikr-modal'),
+                    dhikrContent: document.getElementById('dhikr-content'),
+                    dailyNameCard: document.getElementById('daily-name-card'),
+                    dailyNameSection: document.getElementById('daily-name-section'),
+                    toastContainer: document.getElementById('toast-container'),
+                },
+                
+                // --- INITIALIZATION ---
+                init() {
+                    this.simulateLoading();
+                    this.theme.init();
+                    this.parallax.init();
+                    this.setupDailyName();
+                    this.populateCategories();
+                    this.updateFavoritesCount();
+                    this.setupEventListeners();
+                    this.render();
+                },
+                
+                // --- PRELOADER ---
+                simulateLoading() {
+                    this.dom.preloaderBar.style.width = '100%';
+                    setTimeout(() => {
+                        this.dom.preloader.style.opacity = '0';
+                        this.dom.app.style.opacity = '1';
+                        setTimeout(() => this.dom.preloader.style.display = 'none', 500);
+                    }, 1200);
+                },
+
+                // --- THEME LOGIC ---
+                theme: {
+                    init() {
+                        const savedTheme = localStorage.getItem('theme') === 'light' ? false : true;
+                        this.apply(savedTheme);
+                    },
+                    apply(isDark) {
+                        document.documentElement.classList.toggle('dark', isDark);
+                        document.documentElement.classList.toggle('light', !isDark);
+                        App.dom.themeIcon.className = `ph text-xl text-yellow-300 ${isDark ? 'ph-moon-stars-fill' : 'ph-sun-fill'}`;
+                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                    },
+                    toggle() {
+                        this.apply(!document.documentElement.classList.contains('dark'));
+                    }
+                },
+                
+                // --- PARALLAX BACKGROUND ---
+                parallax: {
+                    init() {
+                        ['.2', '.5', '1'].forEach((depth, i) => {
+                            const layer = document.createElement('div');
+                            layer.className = 'layer';
+                            layer.dataset.depth = depth;
+                            for (let j = 0; j < 50; j++) {
+                                const star = this.createStar(i + 1);
+                                layer.appendChild(star);
+                            }
+                            App.dom.background.appendChild(layer);
+                        });
+                        // Add shooting stars
+                        for (let i = 0; i < 3; i++) {
+                            const star = this.createShootingStar();
+                            App.dom.background.appendChild(star);
+                        }
+                    },
+                    createStar(size) {
+                        const star = document.createElement('div');
+                        star.className = 'star';
+                        star.style.width = `${size}px`;
+                        star.style.height = `${size}px`;
+                        star.style.top = `${Math.random() * 100}%`;
+                        star.style.left = `${Math.random() * 100}%`;
+                        return star;
+                    },
+                     createShootingStar() {
+                        const star = document.createElement('div');
+                        star.className = 'shooting-star';
+                        star.style.top = `${Math.random() * 80 - 20}%`;
+                        star.style.left = `${Math.random() * 80 - 20}%`;
+                        star.style.animationDelay = `${Math.random() * 10}s`;
+                        star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                        return star;
+                    },
+                    move(e) {
+                        const { clientX, clientY } = e;
+                        const x = (clientX - window.innerWidth / 2) / window.innerWidth;
+                        const y = (clientY - window.innerHeight / 2) / window.innerHeight;
+                        document.querySelectorAll('.layer').forEach(layer => {
+                            const depth = layer.dataset.depth;
+                            layer.style.transform = `translate(${x * 50 * depth}px, ${y * 30 * depth}px)`;
+                        });
+                    }
+                },
+
+                // --- MAIN RENDER LOGIC ---
+                render() {
+                    let filteredNames = namesOfAllah;
+                    
+                    if (this.state.currentFilter.showFavorites) {
+                        filteredNames = filteredNames.filter(name => this.state.favorites.includes(name.id));
+                    }
+                    if (this.state.currentFilter.category !== 'all') {
+                        filteredNames = filteredNames.filter(name => name.category === this.state.currentFilter.category);
+                    }
+                    const term = this.state.currentFilter.term.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    if (term) {
+                        filteredNames = filteredNames.filter(n => 
+                            n.transliteration.toLowerCase().includes(term) ||
+                            n.translation.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(term) ||
+                            n.benefit.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(term) ||
+                            n.arabic.includes(term)
+                        );
+                    }
+
+                    this.dom.namesGrid.innerHTML = '';
+                    this.dom.noResults.classList.toggle('hidden', filteredNames.length > 0);
+                    
+                    const fragment = document.createDocumentFragment();
+                    filteredNames.forEach((name, index) => {
+                        const isFav = this.state.favorites.includes(name.id);
+                        const card = document.createElement('div');
+                        card.className = `name-card card p-5 rounded-xl shadow-lg transition-all duration-300 hover:shadow-yellow-400/20 hover:border-yellow-500/50 hover:-translate-y-2 opacity-0 fade-in cursor-pointer ${isFav ? 'border-yellow-500/50' : ''}`;
+                        card.style.setProperty('--delay', `${index * 0.02}s`);
+                        
+                        card.innerHTML = `
+                            <div class="flex justify-between items-start">
+                                <span class="text-xl font-bold text-yellow-400">${name.id}.</span>
+                                <p class="text-3xl font-amiri text-right">${name.arabic}</p>
+                            </div>
+                            <div class="mt-4">
+                                <h3 class="text-lg font-bold truncate">${name.transliteration}</h3>
+                                <p class="text-yellow-500 text-sm">${name.translation}</p>
+                            </div>
+                        `;
+                        card.addEventListener('click', () => this.modal.open(name.id));
+                        fragment.appendChild(card);
+                    });
+                    this.dom.namesGrid.appendChild(fragment);
+                },
+
+                // --- MODAL LOGIC ---
+                modal: {
+                    open(id) {
+                        const name = namesOfAllah.find(n => n.id === id);
+                        if (!name) return;
+
+                        const isFav = App.state.favorites.includes(name.id);
+                        App.dom.modalContent.innerHTML = `
+                            <div class="p-6 text-center border-b border-white/10 dark:border-white/10">
+                                <p class="font-amiri text-6xl text-yellow-300">${name.arabic}</p>
+                                <h2 class="text-3xl font-bold mt-4">${name.transliteration}</h2>
+                                <p class="text-yellow-400 text-lg">${name.translation}</p>
+                            </div>
+                            <div class="overflow-y-auto p-6 flex-grow">
+                                <p class="text-left leading-relaxed opacity-80">${name.benefit}</p>
+                                <div class="mt-4 pt-4 border-t border-white/10 dark:border-white/10 text-sm opacity-60">
+                                    <p><strong>Catégorie:</strong> ${name.category}</p>
+                                    <p class="mt-2 font-amiri italic text-right"><strong>Exemple Coranique:</strong> "${name.quran_verse}"</p>
+                                </div>
+                            </div>
+                            <div class="p-3 grid grid-cols-4 gap-2 border-t border-white/10 dark:border-white/10">
+                                <button class="favorite-btn p-3 rounded-full hover:bg-white/10 dark:hover:bg-white/10 transition ${isFav ? 'favorited' : ''}" data-id="${name.id}" title="Ajouter aux favoris"><i class="ph-heart-bold text-2xl text-yellow-400"></i></button>
+                                <button class="dhikr-btn p-3 rounded-full hover:bg-white/10 dark:hover:bg-white/10 transition" data-id="${name.id}" title="Mode Dhikr"><i class="ph-hands-praying-bold text-2xl"></i></button>
+                                <button class="audio-btn p-3 rounded-full hover:bg-white/10 dark:hover:bg-white/10 transition" data-text="${name.arabic}" title="Écouter"><i class="ph-speaker-high-bold text-2xl"></i></button>
+                                <button class="copy-btn p-3 rounded-full hover:bg-white/10 dark:hover:bg-white/10 transition" data-id="${name.id}" title="Copier"><i class="ph-copy-bold text-2xl"></i></button>
+                            </div>
+                            <button class="close-modal-btn absolute top-3 right-3 p-2 rounded-full hover:bg-white/10 dark:hover:bg-white/10 transition"><i class="ph-x-bold text-xl"></i></button>
+                        `;
+                        
+                        App.dom.modal.classList.remove('hidden');
+                        App.dom.modalContent.classList.remove('modal-out');
+                        App.dom.modalContent.classList.add('modal-in', 'opacity-100');
+                        
+                        App.dom.modalContent.querySelector('.close-modal-btn').addEventListener('click', this.close);
+                        App.dom.modalContent.querySelector('.favorite-btn').addEventListener('click', () => { App.toggleFavorite(name.id); this.open(name.id); });
+                        App.dom.modalContent.querySelector('.audio-btn').addEventListener('click', (e) => App.playPronunciation(e.currentTarget.dataset.text));
+                        App.dom.modalContent.querySelector('.copy-btn').addEventListener('click', () => App.copyToClipboard(name.id));
+                        App.dom.modalContent.querySelector('.dhikr-btn').addEventListener('click', () => { this.close(); App.dhikr.open(name); });
+                    },
+                    close() {
+                        App.dom.modalContent.classList.add('modal-out');
+                        App.dom.modalContent.classList.remove('modal-in', 'opacity-100');
+                        setTimeout(() => App.dom.modal.classList.add('hidden'), 200);
+                    }
+                },
+                
+                // --- DHIKR MODE LOGIC ---
+                dhikr: {
+                    count: 0,
+                    open(name) {
+                        this.count = 0;
+                        App.dom.dhikrContent.innerHTML = `
+                            <p class="font-amiri text-7xl md:text-8xl text-yellow-300">${name.arabic}</p>
+                            <h2 class="text-4xl font-bold mt-4 text-white">${name.transliteration}</h2>
+                            <div id="dhikr-counter-display" class="text-8xl font-bold my-8 text-white transition-transform duration-100">0</div>
+                            <button id="dhikr-tap-area" class="w-48 h-48 rounded-full bg-yellow-400/80 backdrop-blur-sm flex items-center justify-center mx-auto relative focus:outline-none">
+                                <span class="text-black text-2xl font-bold">Appuyer</span>
+                            </button>
+                            <button id="dhikr-close-btn" class="absolute -top-8 -right-2 p-2 rounded-full text-white hover:bg-white/20"><i class="ph-x-bold text-3xl"></i></button>
+                        `;
+                        
+                        App.dom.dhikrModal.classList.remove('hidden');
+                        App.dom.dhikrContent.classList.add('modal-in', 'opacity-100');
+                        
+                        App.dom.dhikrContent.querySelector('#dhikr-close-btn').addEventListener('click', this.close);
+                        App.dom.dhikrContent.querySelector('#dhikr-tap-area').addEventListener('click', (e) => this.increment(e.currentTarget));
+                    },
+                    increment(button) {
+                        this.count++;
+                        const display = App.dom.dhikrContent.querySelector('#dhikr-counter-display');
+                        display.textContent = this.count;
+                        display.style.transform = 'scale(1.1)';
+                        setTimeout(() => display.style.transform = 'scale(1)', 100);
+
+                        // Visual feedback ring
+                        const ring = document.createElement('div');
+                        ring.className = 'absolute inset-0 rounded-full border-4 border-yellow-200 pulse-ring';
+                        button.appendChild(ring);
+                        setTimeout(() => ring.remove(), 1000);
+                    },
+                    close() {
+                        App.dom.dhikrContent.classList.add('modal-out');
+                        App.dom.dhikrContent.classList.remove('modal-in', 'opacity-100');
+                        setTimeout(() => App.dom.dhikrModal.classList.add('hidden'), 200);
+                    }
+                },
+                
+                // --- FAVORITES LOGIC ---
+                toggleFavorite(id) {
+                    if (this.state.favorites.includes(id)) {
+                        this.state.favorites = this.state.favorites.filter(favId => favId !== id);
+                        this.showToast('Retiré des favoris');
+                    } else {
+                        this.state.favorites.push(id);
+                         this.showToast('Ajouté aux favoris !', 'success');
+                    }
+                    localStorage.setItem('allahNamesFavorites', JSON.stringify(this.state.favorites));
+                    this.updateFavoritesCount();
+                    this.render();
+                },
+                updateFavoritesCount() {
+                    this.dom.favoriteCount.textContent = this.state.favorites.length;
+                },
+
+                // --- UTILITY FUNCTIONS ---
+                playPronunciation(text) {
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = 'ar-SA';
+                        utterance.rate = 0.8;
+                        window.speechSynthesis.speak(utterance);
+                    } else {
+                        this.showToast("La synthèse vocale n'est pas supportée.", 'error');
+                    }
+                },
+                copyToClipboard(id) {
+                    const name = namesOfAllah.find(n => n.id === id);
+                    const text = `${name.arabic}\n${name.transliteration} - ${name.translation}\n\nBienfait: ${name.benefit}`;
+                    navigator.clipboard.writeText(text).then(() => {
+                        this.showToast('Nom copié dans le presse-papiers !', 'success');
+                    }).catch(() => {
+                        this.showToast('Erreur lors de la copie.', 'error');
+                    });
+                },
+                populateCategories() {
+                    const categories = [...new Set(namesOfAllah.map(n => n.category))];
+                    categories.sort().forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat;
+                        option.textContent = cat;
+                        this.dom.categoryFilter.appendChild(option);
+                    });
+                },
+                
+                // --- NAME OF THE DAY ---
+                setupDailyName() {
+                    const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+                    const name = namesOfAllah[dayOfYear % 99];
+                    
+                    this.dom.dailyNameCard.innerHTML = `
+                        <div class="text-center md:text-left">
+                            <p class="font-amiri text-6xl text-yellow-300">${name.arabic}</p>
+                            <h3 class="text-3xl font-bold mt-2">${name.transliteration}</h3>
+                            <p class="text-yellow-400 text-lg">${name.translation}</p>
+                        </div>
+                        <p class="opacity-80 flex-grow text-center md:text-left">${name.benefit.substring(0, 150)}...</p>
+                    `;
+                    this.dom.dailyNameCard.addEventListener('click', () => this.modal.open(name.id));
+                    this.dom.dailyNameSection.classList.remove('opacity-0');
+                },
+
+                // --- TOAST NOTIFICATIONS ---
+                showToast(message, type = 'info') {
+                    const toast = document.createElement('div');
+                    const icon = type === 'success' ? 'ph-check-circle' : (type === 'error' ? 'ph-x-circle' : 'ph-info');
+                    const color = type === 'success' ? 'bg-green-500' : (type === 'error' ? 'bg-red-500' : 'bg-blue-500');
+                    
+                    toast.className = `flex items-center gap-3 p-3 rounded-lg text-white shadow-lg ${color} transition-all duration-300 transform translate-x-full opacity-0`;
+                    toast.innerHTML = `<i class="${icon} text-2xl"></i><span>${message}</span>`;
+                    
+                    this.dom.toastContainer.appendChild(toast);
+                    
+                    // Animate in
+                    setTimeout(() => {
+                        toast.classList.remove('translate-x-full', 'opacity-0');
+                    }, 10);
+                    
+                    // Animate out and remove
+                    setTimeout(() => {
+                        toast.classList.add('opacity-0');
+                        toast.addEventListener('transitionend', () => toast.remove());
+                    }, 3000);
+                },
+
+                // --- EVENT LISTENERS ---
+                setupEventListeners() {
+                    this.dom.searchInput.addEventListener('input', (e) => {
+                        this.state.currentFilter.term = e.target.value;
+                        this.render();
+                    });
+                    this.dom.categoryFilter.addEventListener('change', (e) => {
+                        this.state.currentFilter.category = e.target.value;
+                        this.render();
+                    });
+                    this.dom.favoriteToggle.addEventListener('click', () => {
+                        this.state.currentFilter.showFavorites = !this.state.currentFilter.showFavorites;
+                        this.dom.favoriteToggle.classList.toggle('bg-yellow-400/30', this.state.currentFilter.showFavorites);
+                        this.render();
+                    });
+                    this.dom.randomNameBtn.addEventListener('click', () => this.modal.open(Math.floor(Math.random() * 99) + 1));
+                    this.dom.themeToggle.addEventListener('click', () => this.theme.toggle());
+                    this.dom.modal.addEventListener('click', (e) => { if (e.target === this.dom.modal) this.modal.close(); });
+                    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !this.dom.modal.classList.contains('hidden')) this.modal.close(); });
+                    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !this.dom.dhikrModal.classList.contains('hidden')) this.dhikr.close(); });
+                    this.dom.scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+                    window.addEventListener('mousemove', (e) => this.parallax.move(e));
+                    window.onscroll = () => {
+                        const isScrolled = document.documentElement.scrollTop > 100;
+                        this.dom.scrollTopBtn.classList.toggle('hidden', !isScrolled);
+                        this.dom.scrollTopBtn.classList.toggle('opacity-0', !isScrolled);
+                        this.dom.scrollTopBtn.classList.toggle('translate-y-4', !isScrolled);
+                    };
+                }
+            };
+
+            // --- Lancement de l'application ---
+            App.init();
+        });
+    </script>
+</body>
+</html>
