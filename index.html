@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,16 +14,14 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         :root {
-            --bg-dark: #0c0a09; --bg-light: #f8fafc;
-            --text-dark: #e2e8f0; --text-light: #0f172a;
-            --card-dark: #18181b; --card-light: #ffffff;
-            --border-dark: #27272a; --border-light: #e2e8f0;
+            --bg-dark: #0c0a09;
+            --text-dark: #e2e8f0;
+            --card-dark: #18181b;
+            --border-dark: #27272a;
             --gold: #facc15; --gold-hover: #eab308;
         }
-        html.dark { color-scheme: dark; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-dark); scroll-behavior: smooth; transition: background-color 0.5s, color 0.5s; }
-        .dark body { background-color: var(--bg-dark); color: var(--text-dark); }
-        .light body { background-color: var(--bg-light); color: var(--text-light); }
+        html { color-scheme: dark; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-dark); scroll-behavior: smooth; }
         .font-amiri { font-family: 'Amiri', serif; }
 
         /* Arrière-plan Parallax Amélioré */
@@ -35,8 +33,7 @@
 
         /* Barre de défilement */
         ::-webkit-scrollbar { width: 8px; }
-        .dark ::-webkit-scrollbar-track { background: var(--card-dark); }
-        .light ::-webkit-scrollbar-track { background: var(--border-light); }
+        ::-webkit-scrollbar-track { background: var(--card-dark); }
         ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--gold-hover); }
 
@@ -51,11 +48,8 @@
         .pulse-ring { animation: pulse-ring 1s ease-out; }
 
         /* Styles des composants */
-        .card { background-color: var(--card-dark); border: 1px solid var(--border-dark); transition: background-color 0.5s, border-color 0.5s; }
-        .dark .card { background-color: var(--card-dark); border-color: var(--border-dark); }
-        .light .card { background-color: var(--card-light); border-color: var(--border-light); }
+        .card { background-color: var(--card-dark); border: 1px solid var(--border-dark); }
         .glassmorphism { background: rgba(24, 24, 27, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-dark); }
-        .light .glassmorphism { background: rgba(255, 255, 255, 0.5); border-bottom: 1px solid var(--border-light); }
         .favorite-btn.favorited svg { fill: var(--gold); }
     </style>
 </head>
@@ -79,7 +73,6 @@
                 <div class="mt-8 flex flex-wrap justify-center items-center gap-4">
                     <button id="randomNameBtn" class="flex items-center gap-2 bg-yellow-400/20 border border-yellow-400/50 text-yellow-300 px-6 py-2 rounded-full hover:bg-yellow-400/30 transition duration-300 backdrop-blur-sm"><i class="ph-shuffle-bold"></i>Découvrir</button>
                     <button id="favorite-toggle" class="flex items-center gap-2 bg-white/10 border border-white/20 text-white px-6 py-2 rounded-full hover:bg-white/20 transition duration-300 backdrop-blur-sm"><i class="ph ph-heart"></i>Favoris <span id="favorite-count" class="bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded-full">0</span></button>
-                    <button id="theme-toggle" class="p-2.5 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition duration-300 backdrop-blur-sm"><i id="theme-icon" class="ph text-xl text-yellow-300"></i></button>
                 </div>
             </div>
         </header>
@@ -246,8 +239,6 @@
                     app: document.getElementById('app'),
                     preloader: document.getElementById('preloader'),
                     preloaderBar: document.getElementById('preloader-bar'),
-                    themeToggle: document.getElementById('theme-toggle'),
-                    themeIcon: document.getElementById('theme-icon'),
                     background: document.getElementById('background-parallax'),
                     namesGrid: document.getElementById('namesGrid'),
                     searchInput: document.getElementById('searchInput'),
@@ -269,7 +260,6 @@
                 // --- INITIALIZATION ---
                 init() {
                     this.simulateLoading();
-                    this.theme.init();
                     this.parallax.init();
                     this.setupDailyName();
                     this.populateCategories();
@@ -286,23 +276,6 @@
                         this.dom.app.style.opacity = '1';
                         setTimeout(() => this.dom.preloader.style.display = 'none', 500);
                     }, 1200);
-                },
-
-                // --- THEME LOGIC ---
-                theme: {
-                    init() {
-                        const savedTheme = localStorage.getItem('theme') === 'light' ? false : true;
-                        this.apply(savedTheme);
-                    },
-                    apply(isDark) {
-                        document.documentElement.classList.toggle('dark', isDark);
-                        document.documentElement.classList.toggle('light', !isDark);
-                        App.dom.themeIcon.className = `ph text-xl text-yellow-300 ${isDark ? 'ph-moon-stars-fill' : 'ph-sun-fill'}`;
-                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                    },
-                    toggle() {
-                        this.apply(!document.documentElement.classList.contains('dark'));
-                    }
                 },
                 
                 // --- PARALLAX BACKGROUND ---
@@ -407,25 +380,25 @@
 
                         const isFav = App.state.favorites.includes(name.id);
                         App.dom.modalContent.innerHTML = `
-                            <div class="p-6 text-center border-b border-white/10 dark:border-white/10">
+                            <div class="p-6 text-center border-b border-white/10">
                                 <p class="font-amiri text-6xl text-yellow-300">${name.arabic}</p>
                                 <h2 class="text-3xl font-bold mt-4">${name.transliteration}</h2>
                                 <p class="text-yellow-400 text-lg">${name.translation}</p>
                             </div>
                             <div class="overflow-y-auto p-6 flex-grow">
                                 <p class="text-left leading-relaxed opacity-80">${name.benefit}</p>
-                                <div class="mt-4 pt-4 border-t border-white/10 dark:border-white/10 text-sm opacity-60">
+                                <div class="mt-4 pt-4 border-t border-white/10 text-sm opacity-60">
                                     <p><strong>Catégorie:</strong> ${name.category}</p>
                                     <p class="mt-2 font-amiri italic text-right"><strong>Exemple Coranique:</strong> "${name.quran_verse}"</p>
                                 </div>
                             </div>
-                            <div class="p-3 grid grid-cols-4 gap-2 border-t border-white/10 dark:border-white/10">
-                                <button class="favorite-btn p-3 rounded-full hover:bg-white/10 dark:hover:bg-white/10 transition ${isFav ? 'favorited' : ''}" data-id="${name.id}" title="Ajouter aux favoris"><i class="ph-heart-bold text-2xl text-yellow-400"></i></button>
-                                <button class="dhikr-btn p-3 rounded-full hover:bg-white/10 dark:hover:bg-white/10 transition" data-id="${name.id}" title="Mode Dhikr"><i class="ph-hands-praying-bold text-2xl"></i></button>
-                                <button class="audio-btn p-3 rounded-full hover:bg-white/10 dark:hover:bg-white/10 transition" data-text="${name.arabic}" title="Écouter"><i class="ph-speaker-high-bold text-2xl"></i></button>
-                                <button class="copy-btn p-3 rounded-full hover:bg-white/10 dark:hover:bg-white/10 transition" data-id="${name.id}" title="Copier"><i class="ph-copy-bold text-2xl"></i></button>
+                            <div class="p-3 grid grid-cols-4 gap-2 border-t border-white/10">
+                                <button class="favorite-btn p-3 rounded-full hover:bg-white/10 transition ${isFav ? 'favorited' : ''}" data-id="${name.id}" title="Ajouter aux favoris"><i class="ph-heart-bold text-2xl text-yellow-400"></i></button>
+                                <button class="dhikr-btn p-3 rounded-full hover:bg-white/10 transition" data-id="${name.id}" title="Mode Dhikr"><i class="ph-hands-praying-bold text-2xl"></i></button>
+                                <button class="audio-btn p-3 rounded-full hover:bg-white/10 transition" data-text="${name.arabic}" title="Écouter"><i class="ph-speaker-high-bold text-2xl"></i></button>
+                                <button class="copy-btn p-3 rounded-full hover:bg-white/10 transition" data-id="${name.id}" title="Copier"><i class="ph-copy-bold text-2xl"></i></button>
                             </div>
-                            <button class="close-modal-btn absolute top-3 right-3 p-2 rounded-full hover:bg-white/10 dark:hover:bg-white/10 transition"><i class="ph-x-bold text-xl"></i></button>
+                            <button class="close-modal-btn absolute top-3 right-3 p-2 rounded-full hover:bg-white/10 transition"><i class="ph-x-bold text-xl"></i></button>
                         `;
                         
                         App.dom.modal.classList.remove('hidden');
@@ -589,7 +562,6 @@
                         this.render();
                     });
                     this.dom.randomNameBtn.addEventListener('click', () => this.modal.open(Math.floor(Math.random() * 99) + 1));
-                    this.dom.themeToggle.addEventListener('click', () => this.theme.toggle());
                     this.dom.modal.addEventListener('click', (e) => { if (e.target === this.dom.modal) this.modal.close(); });
                     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !this.dom.modal.classList.contains('hidden')) this.modal.close(); });
                     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !this.dom.dhikrModal.classList.contains('hidden')) this.dhikr.close(); });
